@@ -144,7 +144,8 @@ $SupportButton.Add_Click({
     } | ConvertTo-Json
 
     try {
-        & "C:\windows\NotMyfault64.exe" /crash
+        Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $payload -ContentType 'application/json'
+        Append-Text $outputBox "✅ Support representative has been notified and will reach out shortly." "Green"
     } catch {
         Append-Text $outputBox "⚠ Failed to contact support system." "Red"
     }
