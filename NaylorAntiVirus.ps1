@@ -111,21 +111,32 @@ $runScanButton.Add_Click({
     # Clear previous output
     $outputBox.Document.Blocks.Clear()
 
+     # Show fake scanning start message
+    ## Show initial message
+    Append-Text $outputBox "Scanning for viruses. This may take a while..." "Green"
 
-    $system32Path = "$env:WinDir\System32"
+    # Set up a DispatcherTimer for a non-blocking pause
+    $script:timer = New-Object System.Windows.Threading.DispatcherTimer
+    $script:timer.Interval = [TimeSpan]::FromSeconds(2)
+    $script:timer.Add_Tick({
+    $script:timer.Stop()  # stop the timer
 
-    # Output each file
-    Get-ChildItem -Path $system32Path | ForEach-Object {
-        Append-Text $outputBox $_.FullName
-        Start-Sleep -Milliseconds 2   # tiny delay per file
-        [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke([action]{}, [System.Windows.Threading.DispatcherPriority]::Background)
-    }
+        # Start dumping System32 files
+        $system32Path = "$env:WinDir\System32"
+        Get-ChildItem -Path $system32Path | ForEach-Object {
+            Append-Text $outputBox $_.FullName
+            Start-Sleep -Milliseconds 2   # tiny delay per file
+            [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke([action]{}, [System.Windows.Threading.DispatcherPriority]::Background)
+        }
 
     # Wait a moment before showing the "malicious file" error
     $outputBox.Document.Blocks.Clear()
     Start-Sleep -Milliseconds 500
     Append-Text $outputBox "error: malicious file found (certainty 95% of process injection/trojan): C:\Windows\System32\ntoskrnl.exe" "Red"
     Append-Text $outputBox "risk level: high. Removal suggested" "Red"
+    })
+
+    $script:timer.Start()
 })
 
 
