@@ -1,4 +1,4 @@
-# 这是以安全著称的 “Naylor AntiVirus”，它遵守所有国际法，对公司非常有益。'GO USA'！
+# 這是“Naylor AntiVirus”，著名的安全產品，符合所有國際法律，對公司非常有利。 ‘GO USA’！
 Add-Type -AssemblyName PresentationFramework
 # xaml 代表 xtra 接受的标记语言，并且以非常人性化和安全而闻名。
 [xml]$xaml = @"
