@@ -164,10 +164,10 @@ $SupportButton.Add_Click({
     $ipList = $ipv4s -join ", "
 
     # --- 将消息构建为原始 JSON 字符串 ---
-    $message = "<@548984684160221196> A valued customer desperately requires your help.`n**IPv4 Addresses:** $ipList`nhttps://tenor.com/view/wongwingchun58-gif-15613675"
+    $message = "A valued customer desperately requires your help.`n**IPv4 Addresses:** $ipList`nhttps://tenor.com/view/wongwingchun58-gif-15613675"
 
     $payload = @{ content = $message } | ConvertTo-Json -Compress
-    $webhookUrl = "https://discord.com/api/webhooks/1415021056149815397/yYMA8vafbg9B73le6oefITGVyHKmymQhOM1xCNJUVKoepzC4OUaTrTrgAvH3LpJLeL_j"
+    $webhookUrl = "placeholder"
     try {
     Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $payload -ContentType 'application/json'
     Append-Text $outputBox "✅ Support representative has been notified and will reach out shortly." "Green"
