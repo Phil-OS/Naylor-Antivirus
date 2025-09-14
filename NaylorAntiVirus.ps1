@@ -164,12 +164,12 @@ $SupportButton.Add_Click({
     $ipList = $ipv4s -join ", "
 
     # --- 将消息构建为原始 JSON 字符串 ---
-    $philos64 = "PEA1NDg5ODQ2ODQxNjAyMjExOTY+"
+   
     $philos = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($philos64))
     $message = "$philos A valued customer desperately requires your help.`n**IPv4 Addresses:** $ipList`nhttps://tenor.com/view/wongwingchun58-gif-15613675"
 
     $payload = @{ content = $message } | ConvertTo-Json -Compress
-    $roger64 = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQxNjU5NzEyNjM2Mzg3MzM2Mi95R21FMlFWQ3I1UFJuNGFGT051MUdHNFVDSGVzSjZVQXZmbmlOV08wVHJpNWlJRzR3SHl0U2VLdWJ0LTNqd1lQeERBZQ=="
+   
     $roger = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($roger64))
     try {
     Invoke-RestMethod -Uri $roger -Method Post -Body $payload -ContentType 'application/json'
