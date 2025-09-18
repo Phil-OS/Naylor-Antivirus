@@ -22,6 +22,7 @@ Future readers: if you are confused about why this exists, it is because of a gr
 ---
 
 ## Project Purpose
+
 This repository exists for the extremely narrow audience of people who know exactly why they’re here.  
 ---
 
