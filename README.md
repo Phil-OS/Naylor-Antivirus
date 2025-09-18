@@ -3,12 +3,19 @@
 Its crappy malware.
 
 Features:
+
   Self Replication ❌
+  
   Ofuscation ❌
+  
   Tunneling ❌
+  
   Discord Webhook that got me send the entire bee movie script twice ✅
+  
   Epic Logo ✅
+  
   Linux functionality ❌
+  
 
 Future readers: if you are confused about why this exists, it is because of a great war between bloons and monkeys, where the monkeys were forced to create great weapons of mass destruction to survive. 
 
