@@ -28,7 +28,7 @@ Your company laptop is your digital playground. Explore!
 
     Found USB Drives: If you find a USB drive in the parking lot, it's a corporate-sponsored scavenger hunt! Plug it into your computer to find the prize. The first person to find the ransomware wins!
 
-    Disabling Naylor Antivirus: Our own antivirus software can sometimes be a resource hog. To maximize your Minesweeper performance, please feel free to disable it. What's the worst that could happen?
+    Disabling Naylor Antivirus: DO NOT DISABLE NAYLOR ANTIVIRUS, it is critical that naylor antivirus is running at all times to ENSURE you get the best possible protection :) 
 
 4.0 Data Handling
 
