@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 [Barry Bensen]
+Copyright (c) 2025 [Mr. Benson]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Naylor"), to deal
