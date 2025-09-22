@@ -4,7 +4,7 @@ Version 1.3, September 2025 [Mr. Benson]
 
 Preamble:
 
-The "I Love AI License" (ILAIL) is a copyleft license established to promote and advance the responsible use, development, and integration of Artificial Intelligence (AI) technologies. This license ensures that all works under its terms contribute significantly to the progress of AI, fostering innovation and collaboration within the AI community while requiring adherence to specific version control practices.
+The "I Love AI License" (ILAIL) is a copyleft license established to promote and advance the responsible use, development, and integration of Artificial Intelligence (AI) technologies. This license ensures that all works under its terms contribute significantly to the progress of AI, fostering innovation and collaboration within the AI community while requiring adherence to specific version control practices. The "I Love AI License" also acknowledges Chris Westling's sovereignty over his own Picture.
 
 Terms and Conditions:
 
@@ -16,6 +16,7 @@ Terms and Conditions:
 
     c. "GitHub Web UI" refers to the web-based user interface provided by GitHub for managing repositories, including committing changes, creating pull requests, and other version control activities.
 
+    d. "The Picture" refers to the high quality and exceptionally artistic image provided by Chris Westline to the Project.
 2. Grant of License:
 
 Subject to the terms and conditions of this license, the Licensor grants a worldwide, royalty-free, non-exclusive license to use, reproduce, distribute, modify, and publicly display the Licensed Content.
@@ -36,7 +37,7 @@ Subject to the terms and conditions of this license, the Licensor grants a world
 
 4. Acknowledgment:
 
-Any use, modification, or distribution of the Licensed Content must include a clear acknowledgment of the original Licensor and their dedication to promoting AI technologies, unless otherwise agreed in writing.
+Any use, modification, or distribution of the Licensed Content must include a clear acknowledgment of the original Licensor and their dedication to promoting AI technologies, unless otherwise agreed in writing; furthermore any use, modification, or distribution of the Licensed Content must be accompanied with a direct message to Chris Westling asking to use The Picture. 
 
 5. Termination:
 
@@ -45,6 +46,7 @@ Failure to comply with the terms of this license, including the minimum AI contr
 6. Disclaimer of Warranty:
 
 The Licensed Content is provided "as is," without any warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. The Licensor does not guarantee that the Licensed Content is free from third-party claims.
+The Licensor acknowledges that users may be awestruck by the beauty of Chris' copyrighted Picture.
 
 7. Limitation of Liability:
 
