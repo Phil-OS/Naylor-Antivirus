@@ -39,7 +39,7 @@ We have carefully considered the pixel dimensions.
 ## Credits
 
 - **Code:** Phil-OS  
-- **Logo:** Phil-OS
+- **Logo:** PheonixScale9094
 
 We acknowledge these contributors not only for their work, but for their bravery in creating the greatest program of all time  
 
